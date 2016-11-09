@@ -82,11 +82,13 @@ public class CloudConfigSupportConfiguration implements
             logger.error("获取ConfigService配置资源失败");
 
             Properties backupProperty = loadBackupProperty(configSupportProperties.getFile());
-            HashMap backupSourceMap = new HashMap<>(backupProperty);
+            if (backupProperty != null) {
+                HashMap backupSourceMap = new HashMap<>(backupProperty);
 
-            PropertySource backupSource = new MapPropertySource("backupSource", backupSourceMap);
-            propertySources.addFirst(backupSource);
-
+                PropertySource backupSource = new MapPropertySource("backupSource", backupSourceMap);
+                propertySources.addFirst(backupSource);
+                logger.warn("使用备份的配置启动：{}", configSupportProperties.getFile());
+            }
         }
     }
 
@@ -205,6 +207,7 @@ public class CloudConfigSupportConfiguration implements
 
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
 
         return props;
